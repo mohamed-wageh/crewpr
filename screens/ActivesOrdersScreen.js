@@ -1,4 +1,4 @@
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { DeleteOrder, getOrders } from "../util/http";
 import { AuthContext } from "../store/auth-context";
@@ -11,6 +11,7 @@ const ActivesOrdersScreen = () => {
   const token = authCtx.token;
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -28,31 +29,48 @@ const ActivesOrdersScreen = () => {
     navigation.navigate("OrderDetailsScreen", { orderId });
   };
 
-const handleDelete = async (orderId) => {
-  try {
-    await DeleteOrder(orderId, token);
-    const newData = await getOrders(token);
-    setOrders(newData);
-  } catch (error) {
-    console.error(error);
-  }
-};
+  const handleDelete = async (orderId) => {
+    try {
+      await DeleteOrder(orderId, token);
+      const newData = await getOrders(token);
+      setOrders(newData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <View>
-      <FlatList
-        data={orders}
-        renderItem={({ item }) => (
-          <OrderCard
-            order={item.data}
-            onEdit={() => handleEdit(item.id)}
-            onDelete={() => handleDelete(item.id)}
-          />
-        )}
-        keyExtractor={(item) => item.id}
-      />
+      {orders.length === 0 ? (
+        <View style={styles.container}>
+          <Text style={styles.noOrdersText}>No orders available</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={orders}
+          renderItem={({ item }) => (
+            <OrderCard
+              order={item.data}
+              onEdit={() => handleEdit(item.id)}
+              onDelete={() => handleDelete(item.id)}
+            />
+          )}
+          keyExtractor={(item) => item.id}
+        />
+      )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noOrdersText: {
+    fontSize: 24,
+    color: "white",
+  },
+});
 
 export default ActivesOrdersScreen;

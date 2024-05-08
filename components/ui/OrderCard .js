@@ -12,8 +12,8 @@ const OrderCard = ({ order, onEdit, onDelete }) => {
       <Text>Date/Time: {order.dateTime}</Text>
       <Text>Proposed Budget: {order.proposedBudget}</Text>
       <View style={styles.buttons}>
-        <Button onPress={onEdit}>{"Edit"}</Button>
-        <Button onPress={onDelete}>{"Delete"}</Button>
+        <Button onPress={onEdit}>{"Edit Order"}</Button>
+        <Button onPress={onDelete}>{"Cancel Order"}</Button>
       </View>
     </View>
   );
